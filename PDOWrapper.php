@@ -38,7 +38,7 @@ class PDOWrapper
     public function insert($table, $row)
     {
         if (empty($row))
-            return 1;
+            return 0;
         $sql = "INSERT INTO `{$table}` VALUES (";
         foreach ($row as $item => $value) {
             if (is_string($value))
@@ -60,7 +60,7 @@ class PDOWrapper
     public function update($table, $values, $before)
     {
         if (empty($values) || empty($before))
-            return 1;
+            return 0;
         $sql = "UPDATE `{$table}` SET ";
         foreach ($values as $key => $value) {
             $sql .= "{$key} = ";
@@ -80,9 +80,7 @@ class PDOWrapper
         }
 
         try {
-            $query = $this->connection->prepare($sql);
-            $query->execute();
-            return 0;
+            return $this->connection->exec($sql);
         } catch (\PDOException $e) {
             echo "Ошибка выполнения запроса : " . $e->getMessage();
         }
@@ -102,9 +100,7 @@ class PDOWrapper
                 $sql .= "{$value}";
         }
         try {
-            $query = $this->connection->prepare($sql);
-            $query->execute();
-            return 0;
+           return $this->connection->exec($sql);
         } catch (\PDOException $e) {
             echo "Ошибка выполнения запроса : " . $e->getMessage();
         }
